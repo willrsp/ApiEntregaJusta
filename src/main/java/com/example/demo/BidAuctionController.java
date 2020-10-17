@@ -86,12 +86,17 @@ public class BidAuctionController {
 	public ResponseEntity<BidAuction> result(@PathVariable Long id) {
 				
 		List<BidAuction> bids = repository.findAll();
-		BidAuction bid = bids.get(0);
+		BidAuction bid = null;
 		for (BidAuction bidAuction : bids) {
 			if (bidAuction.getAuctionId() == id ) {
-				if ( bidAuction.getPrice().doubleValue() < bid.getPrice().doubleValue() ) {
+				if (bid == null) {
 					bid = bidAuction;
 				}
+				else {
+					if ( bidAuction.getPrice().doubleValue() < bid.getPrice().doubleValue() ) {
+						bid = bidAuction;
+					}					
+				}				
 			}
 		}		
 		
