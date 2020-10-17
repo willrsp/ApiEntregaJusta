@@ -37,7 +37,7 @@ public class BidAuctionController {
 		return repository.save(bid);
 	}
 	
-	@GetMapping("/{id/bids}")
+	@GetMapping("/{id}/bids")
 	public List<BidAuction> listar() {			
 		return repository.findAll();
 	}
@@ -84,11 +84,19 @@ public class BidAuctionController {
 	
 	@GetMapping("/{id}/bids/results")
 	public ResponseEntity<BidAuction> result(@PathVariable Long id) {
+				
+		List<BidAuction> bids = repository.findAll();
+		BidAuction bid = bids.get(0);
+		for (BidAuction bidAuction : bids) {
+			if (bidAuction.getAuctionId() == id ) {
+				if ( bidAuction.getPrice().doubleValue() < bid.getPrice().doubleValue() ) {
+					bid = bidAuction;
+				}
+			}
+		}		
 		
-		Optional<BidAuction> bid = repository.findById(id);
-		
-		if (bid.isPresent()) {
-			return ResponseEntity.ok(bid.get());
+		if (bid != null) {
+			return ResponseEntity.ok(bid);
 		}
 		
 		return ResponseEntity.notFound().build(); 
